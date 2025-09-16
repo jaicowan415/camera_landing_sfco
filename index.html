@@ -1,7 +1,61 @@
 ---
 layout: blank
 ---
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Co-browse digit code</title>
+    <!-- INCLUDE UJET WEB SDK LOADER -->
+    <script src="https://websdk.ujet.co/v2/loader.js"></script>
+  </head>
+  <body>
+    <div>CODE: <code id="digits"></code></div>
+    <button id="get-code">Get Code</button>
 
+    <script>
+      var ujet = new UJET({
+        companyId: "SFCO",
+        host: "https://zdco.api.ujet.co",
+        cobrowseOptions: {
+          license: '0Blc4UGxQHHDNA',
+          trustedOrigins: ["https://sfco.ujetdemo.co/"],
+        }
+      });
+
+      document.querySelector('#get-code').addEventListener('click', function() {
+        ujet.createCobrowseCode().then(function (code) {
+          document.querySelector('#digits').textContent = code;
+        });
+      });
+
+      ujet.on('created', function () {
+        ujet.authenticate(getAuthToken);
+      });
+
+      function getAuthToken() {
+        // YOU SHOULD HAVE THIS KIND OF API ON YOUR SERVER
+        return fetch('/auth/token', {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify({
+            payload: {
+              identifier: 'test@email.com',
+              name: 'Test user',
+              email: 'test@user.com',
+              phone: '1800UJETSDK'
+            }
+          })
+        }).then(function(resp) {
+          return resp.json();
+        });
+      }
+    </script>
+  </body>
+</html>
 <html>
     <head>
         <title>Webcam Test</title>
